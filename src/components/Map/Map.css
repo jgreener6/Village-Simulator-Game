@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:wght@300;700&display=swap');
 
 .gameboard {
+  margin: 50px;
   width: 375px;
   height: 375px;
   display: flex;

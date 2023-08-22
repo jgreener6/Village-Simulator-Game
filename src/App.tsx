@@ -89,11 +89,16 @@ function App() {
   return (
     <div className="App">
       <div className="header"><Header></Header></div>
-      <ResourceView resources={resources} />
-      <Map gridSize={5} handleResourceUpdate={handleResourceUpdate} resources={resources} setResources={setResources} /> {/* Updated prop name */}
-      
+      <div className="content-container">
+      <div className="gameboard-container">
+        <Map gridSize={5} handleResourceUpdate={handleResourceUpdate} resources={resources} setResources={setResources} />
+        </div>
+        <div className="resourceKey">
+        <ResourceView resources={resources} />
+        </div>
+      </div>
     </div>
   );
+  
 }
-
 export default App;
