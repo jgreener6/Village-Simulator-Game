@@ -28,7 +28,7 @@ A turn-based village-building game built with **React**, **TypeScript** and **Vi
 | Build     | Vite                                                      |
 | Testing   | Vitest, React Testing Library, user-event                 |
 | Quality   | ESLint (typescript-eslint, react-hooks), strict TS        |
-| CI/CD     | GitHub Actions → GitHub Pages                             |
+| CI/CD     | GitHub Actions (lint, test, build), Netlify               |
 
 ## Architecture
 
