@@ -1,115 +1,61 @@
-import './ResourceView.css';
-import { Improvement } from '../../models/Improvement';
-import { useState } from 'react'
-import { ResourceLine } from './ResourceComponents/ResourceLine';
-import { Resource } from '../../models/Improvement';
+import { POPULATION_GOAL, RESOURCES, RESOURCE_TYPES } from '../../game/config';
+import { getDailyNet, getPopulation } from '../../game/logic';
+import type { GameState } from '../../game/types';
+import './ResourcesView.css';
 
-import './ResourceView.css'
-
-
-
-interface ResourceViewProps {
-  resources: Resource[];
-}
-
-export function ResourceView(props: ResourceViewProps) {
-  const { resources } = props;
+export function ResourcesView({ state }: { state: GameState }) {
+  const net = getDailyNet(state);
+  const population = getPopulation(state);
+  const progress = Math.min(100, Math.round((population / POPULATION_GOAL) * 100));
 
   return (
-    <div className="resourceKey">
-      <table>
-        <thead>
-          <tr>
-            <th>Resource</th>
-            <th>Available</th>
-          </tr>
-        </thead>
-        <tbody>
-          {resources.map((resource: Resource) => (
-            <tr key={resource.type}>
-              <td>
-                <ResourceLine resource={resource} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <section className="resources" aria-label="Resources">
+      <div className="population">
+        <div className="population-label">
+          <span>Population</span>
+          <strong>
+            {population} / {POPULATION_GOAL}
+          </strong>
+        </div>
+        <div
+          className="progress"
+          role="progressbar"
+          aria-label="Progress toward population goal"
+          aria-valuemin={0}
+          aria-valuemax={POPULATION_GOAL}
+          aria-valuenow={population}
+        >
+          <div className="progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+      </div>
+
+      <ul className="resource-list">
+        {RESOURCE_TYPES.map((type) => {
+          const change = net[type] ?? 0;
+          return (
+            <li key={type} className="resource">
+              <span className="resource-icon" aria-hidden="true">
+                {RESOURCES[type].icon}
+              </span>
+              <span className="resource-label" title={type === 'people' ? 'Idle villagers, not assigned to a building' : undefined}>
+                {RESOURCES[type].label}
+              </span>
+              <span className="resource-amount" data-testid={`resource-${type}`}>
+                {state.resources[type]}
+              </span>
+              {change !== 0 && (
+                <span
+                  className={`resource-change ${change > 0 ? 'positive' : 'negative'}`}
+                  title="Expected change when the day ends"
+                >
+                  {change > 0 ? '+' : ''}
+                  {change}/day
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
-
-
-
-
-
-
-
-
-
-
-/*export function ResourceView() {
-    const [resources, setResources] = useState<Resource[]>([
-        {
-            type: "Lumber",
-            amount: 5
-        },
-        {
-            type: "Grain",
-            amount: 5
-        },
-        {
-            type: "Water",
-            amount: 5
-        },
-        {
-            type: "Sheep",
-            amount: 1
-        }
-    ]);
-
-    return (
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Resource</th>
-                <th>Available</th>
-              </tr>
-            </thead>
-            <tbody>
-              {resources.map(resource => (
-                <tr key={resource.type}>
-                  <td>
-                    <ResourceLine resources={resource} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
-    }
-  /*  return (
-        <div>
-            <table>
-                <thead>
-                <tr>
-                    <th>Resource</th>
-                    <th>Available</th>
-                </tr>
-                </thead>
-                <tBody>
-                {
-                    resources.map(resource =>(
-                        <tr key={resource.type}>
-                            <td>
-                                <ResourceLine resources={resource}></ResourceLine>
-                                </td>
-                        </tr>)
-                )}
-                </tBody>
-            </table>
-        </div>
-    )
-}
-*/

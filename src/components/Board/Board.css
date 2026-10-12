@@ -1,0 +1,103 @@
+.board {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: var(--radius-lg);
+  background: var(--board-bg);
+  box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.15);
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 560px;
+}
+
+.board-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.board-row > [role='gridcell'] {
+  display: flex;
+}
+
+.tile {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--grass);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+@media (hover: hover) {
+  .tile:hover {
+    transform: translateY(-2px);
+    background: var(--grass-hover);
+  }
+}
+
+.tile:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.tile[aria-pressed='true'] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.tile-image {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.25));
+}
+
+.tile-level {
+  position: absolute;
+  bottom: 4px;
+  font-size: clamp(0.55rem, 1.6vw, 0.75rem);
+  letter-spacing: 1px;
+  color: var(--star);
+  text-shadow: 0 1px 1px rgb(0 0 0 / 0.4);
+}
+
+.tile-empty {
+  font-size: 1.4rem;
+  color: var(--grass-plus);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+@media (hover: hover) {
+  .tile:hover .tile-empty {
+    opacity: 1;
+  }
+}
+
+.tile:focus-visible .tile-empty,
+.tile[aria-pressed='true'] .tile-empty {
+  opacity: 1;
+}
+
+.tile--house { background: var(--tile-house); }
+.tile--field { background: var(--tile-field); }
+.tile--well { background: var(--tile-well); }
+.tile--lumberMill { background: var(--tile-mill); }
+.tile--pasture { background: var(--tile-pasture); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tile {
+    transition: none;
+  }
+  .tile:hover {
+    transform: none;
+  }
+}

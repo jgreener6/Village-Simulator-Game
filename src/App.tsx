@@ -1,104 +1,88 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { useState } from "react";
-import { Map } from "./components/Map/Map"
-import { ResourceView } from "./components/ResourcesView/ResourcesView";
-import { Improvement } from "./models/Improvement";
-import { ImprovementCosts } from "./store/ImprovementsCost";
-import { Resource } from "./models/Improvement";
-import { Header } from "./components/Header";
-
+import { useEffect, useState } from 'react';
+import './App.css';
+import { Board } from './components/Board/Board';
+import { EventLog } from './components/EventLog/EventLog';
+import { HowToPlay } from './components/HowToPlay/HowToPlay';
+import { ResourcesView } from './components/ResourcesView/ResourcesView';
+import { TilePanel } from './components/TilePanel/TilePanel';
+import { POPULATION_GOAL } from './game/config';
+import { useGame } from './game/useGame';
 
 function App() {
-  const [resources, setResources] = useState<Resource[]>([
-    {
-      type: "Lumber",
-      amount: 5,
-    },
-    {
-      type: "Grain",
-      amount: 5,
-    },
-    {
-      type: "Water",
-      amount: 5,
-    },
-    {
-      type: "Sheep",
-      amount: 1,
-    },
-    {
-      type: "People",
-      amount: 0,
+  const [state, dispatch] = useGame();
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const sheetOpen = selectedIndex !== null;
+
+  useEffect(() => {
+    if (!sheetOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelectedIndex(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [sheetOpen]);
+
+  function startNewGame() {
+    if (window.confirm('Start a new village? Your current progress will be lost.')) {
+      dispatch({ type: 'newGame' });
+      setSelectedIndex(null);
     }
-  ]);
-
-  function handleResourceUpdate(improvement: Improvement) {
-    console.log('Resources2:', resources);
-    setResources((prevResources) => {
-      const updatedResources = [...prevResources];
-
-      // Check if the cost can be met
-      for (const costResource of improvement.cost) {
-        const resourceIndex = updatedResources.findIndex(
-          (resource) => resource.type === costResource.type
-        );
-        if (resourceIndex === -1 || updatedResources[resourceIndex].amount < costResource.amount) {
-          console.log('Resources:', resources);
-          console.log(`Matching resource:`, updatedResources[resourceIndex]);
-          console.log(`Cost resource:`, costResource);
-          console.log(`Can produce: false`);
-          console.log(`Insufficient resources to produce improvement`);
-          return prevResources; // Return the previous resources without updating
-        }
-      }
-
-      // Deduct the cost from resources
-      for (const costResource of improvement.cost) {
-        const resourceIndex = updatedResources.findIndex(
-          (resource) => resource.type === costResource.type
-        );
-        if (resourceIndex !== -1) {
-          console.log(`Subtracting ${costResource.amount} ${costResource.type} from ${updatedResources[resourceIndex].amount}`);
-          updatedResources[resourceIndex].amount += costResource.amount;
-          console.log(`Updated amount: ${updatedResources[resourceIndex].amount}`);
-        }
-      }
-
-      // Add the produced resource to resources
-      if (improvement.resourceProduced) {
-        const resourceIndex = updatedResources.findIndex(
-          (resource) => resource.type === improvement.resourceProduced?.type
-        );
-        if (resourceIndex !== -1) {
-          console.log(`Adding ${improvement.resourceProduced.amount} ${improvement.resourceProduced.type} to ${updatedResources[resourceIndex].amount}`);
-          updatedResources[resourceIndex].amount += improvement.resourceProduced.amount;
-          console.log(`Updated amount: ${updatedResources[resourceIndex].amount}`);
-        } else {
-          updatedResources.push(improvement.resourceProduced);
-        }
-      } else {
-        console.log('No resource produced');
-      }
-
-      return updatedResources;
-    });
   }
 
   return (
-    <div className="App">
-      <div className="header"><Header></Header></div>
-      <div className="content-container">
-      <div className="gameboard-container">
-        <Map gridSize={5} handleResourceUpdate={handleResourceUpdate} resources={resources} setResources={setResources} />
+    <div className={`app${sheetOpen ? ' app--sheet-open' : ''}`}>
+      <header className="app-header">
+        <div>
+          <h1>
+            <span aria-hidden="true">🏡</span> <span className="title-text">
+              Village <span className="title-full">Simulator</span>
+              <span className="title-short" aria-hidden="true">Sim</span>
+            </span>
+          </h1>
+          <p className="muted app-tagline">Grow your village to {POPULATION_GOAL} people.</p>
         </div>
-        <div className="resourceKey">
-        <ResourceView resources={resources} />
+        <div className="header-actions">
+          <span className="day-counter" aria-live="polite" data-testid="day">
+            Day {state.day}
+          </span>
+          <button type="button" className="button button--primary" onClick={() => dispatch({ type: 'endDay' })}>
+            End day
+          </button>
+          <button type="button" className="button new-game" onClick={startNewGame} aria-label="New game" title="New game">
+            <span className="new-game-text">New game</span>
+            <span className="new-game-icon" aria-hidden="true">
+              ↺
+            </span>
+          </button>
         </div>
-      </div>
+      </header>
+
+      {state.status === 'won' && (
+        <div className="banner" role="status">
+          <strong>🎉 Victory!</strong> Your village is thriving. Keep building, or start a new game to beat your record.
+        </div>
+      )}
+
+      <main className="layout">
+        <div className="layout-main">
+          <ResourcesView state={state} />
+          <Board tiles={state.tiles} selectedIndex={selectedIndex} onSelect={setSelectedIndex} />
+        </div>
+        <aside className="layout-side">
+          <div className={`sheet${sheetOpen ? ' sheet--open' : ''}`}>
+            <TilePanel state={state} index={selectedIndex} dispatch={dispatch} onClose={() => setSelectedIndex(null)} />
+          </div>
+          <EventLog entries={state.log} />
+        </aside>
+      </main>
+
+      <HowToPlay />
+
+      <footer className="app-footer muted small">
+        Built with React, TypeScript and Vite. Progress is saved in your browser.
+      </footer>
     </div>
   );
-  
 }
+
 export default App;

@@ -1,0 +1,141 @@
+.tile-panel h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tile-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tile-panel {
+  position: relative;
+}
+
+.tile-heading-image {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.sheet-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-sunken);
+  color: var(--text);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sheet-close:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.level-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  margin: 0;
+}
+
+.stats dt {
+  color: var(--text-muted);
+}
+
+.stats dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.action-block {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.action-block h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.action-block p {
+  margin: 0;
+}
+
+.build-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.build-option {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+
+.build-image {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.build-info {
+  display: grid;
+  gap: 2px;
+}
+
+.cost-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cost {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cost--short {
+  background: var(--bad-soft);
+  color: var(--bad);
+  font-weight: 600;
+}
+
+.tile-panel > h2,
+.tile-heading {
+  padding-right: 40px;
+}
