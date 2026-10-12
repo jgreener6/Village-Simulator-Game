@@ -2,7 +2,7 @@
 
 A turn-based village-building game built with **React**, **TypeScript** and **Vite**. Place houses, fields, wells, lumber mills and pastures on a 5×5 map, keep your villagers fed and watered, and grow the settlement to 75 people in as few days as possible.
 
-**[▶ Play it live](https://jgreener6.github.io/Village-Simulator-Game/)**
+**[▶ Play it live](https://thevillagesimulator.netlify.app/)**
 
 <p>
   <img src="docs/screenshot.png" alt="Desktop view: resource bar, the 5×5 village map and the tile details panel" width="72%">
@@ -68,7 +68,7 @@ npm run build      # type-check and build to dist/
 
 ## Deployment
 
-`.github/workflows/ci.yml` lints, tests and builds every push and pull request. Pushes to `main` are deployed to GitHub Pages. To enable it, set **Settings → Pages → Source** to **GitHub Actions**.
+The site is hosted on Netlify. Every push to `main` triggers a deploy, configured in `netlify.toml` (`npm run build`, publishing `dist/`). GitHub Actions (`.github/workflows/ci.yml`) lints, tests and builds every push and pull request.
 
 ## How to play
 
